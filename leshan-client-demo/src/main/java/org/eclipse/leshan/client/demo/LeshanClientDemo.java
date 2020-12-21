@@ -29,6 +29,10 @@ import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -128,16 +132,20 @@ public class LeshanClientDemo {
                             "10360.xml", "10361.xml", "10362.xml", "10363.xml", "10364.xml", "10365.xml", "10366.xml",
                             "10368.xml", "10369.xml",
 
-                            "18830.xml", "18831.xml", };
+                            "18830.xml", "18831.xml",};
 
     private static final int OBJECT_ID_TEMPERATURE_SENSOR = 3303;
+    private static final int OBJECT_ID_WATER_FLOW_SENSOR = 34000;
+    private static final int OBJECT_ID_WATER_PRESSURE_SENSOR = 33000;
     private final static String DEFAULT_ENDPOINT = "LeshanClientDemo";
     private final static int DEFAULT_LIFETIME = 5 * 60; // 5min in seconds
     private final static String USAGE = "java -jar leshan-client-demo.jar [OPTION]\n\n";
 
     private static MyLocation locationInstance;
 
-    public static void main(final String[] args) {
+    
+        
+    public static void main(final String[] args) throws SQLException {
 
         // Define options for command line tools
         Options options = new Options();
@@ -626,6 +634,8 @@ public class LeshanClientDemo {
         initializer.setInstancesForObject(DEVICE, new MyDevice());
         initializer.setInstancesForObject(LOCATION, locationInstance);
         initializer.setInstancesForObject(OBJECT_ID_TEMPERATURE_SENSOR, new RandomTemperatureSensor());
+        initializer.setInstancesForObject(OBJECT_ID_WATER_FLOW_SENSOR, new WaterFlowSensor());
+        initializer.setInstancesForObject(OBJECT_ID_WATER_PRESSURE_SENSOR, new WaterPressureSensor());
         List<LwM2mObjectEnabler> enablers = initializer.createAll();
 
         // Create CoAP Config

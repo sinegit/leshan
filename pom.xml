@@ -120,6 +120,7 @@ Contributors:
             <id>redis</id>
             <properties>
                 <test.exclusion.pattern>nothing</test.exclusion.pattern>
+                <phase>package</phase>
             </properties>
         </profile>
         <profile>
