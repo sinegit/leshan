@@ -16,6 +16,7 @@ import java.util.Date;
 
 import java.util.Base64;
 import java.util.UUID;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 
 import org.eclipse.leshan.client.resource.BaseInstanceEnabler;
@@ -58,8 +59,8 @@ public class WaterFlowSensorCSV extends BaseInstanceEnabler implements Destroyab
     private final ScheduledExecutorService scheduler;
     private final Random rng = new Random();
 
-    private static final String currentPath= "data/waterflowsensor_current.csv";
-    private static final String oldPath= "data/waterflowsensor_old.csv";
+    private static final String currentPath = "data/waterflowsensor_current.csv";
+    private static final String oldPath = "data/waterflowsensor_old.csv";
 
     private int intervalPeriod = 15;
     private int intervalStartOffset = 0;
@@ -69,7 +70,8 @@ public class WaterFlowSensorCSV extends BaseInstanceEnabler implements Destroyab
     private Timestamp oldestRecordedIntervalTS = new Timestamp(oldestRecordedInterval.getTime());
     private Date latestRecordedInterval = new Date();
     private boolean recording = false;
-    // private String intervalHistoricalReadPayload = Base64.getUrlEncoder().encodeToString("Nothing here yet".getBytes());
+    // private String intervalHistoricalReadPayload =
+    // Base64.getUrlEncoder().encodeToString("Nothing here yet".getBytes());
     private String latestPaylod = Base64.getUrlEncoder().encodeToString("".getBytes());
 
     @Override
@@ -91,11 +93,11 @@ public class WaterFlowSensorCSV extends BaseInstanceEnabler implements Destroyab
             case LATEST_RECORDED_INTERVAL:
                 return ReadResponse.success(resourceId, latestRecordedInterval);
             // case INTERVAL_HISTORICAL_READ_PAYLOAD:
-            //     return ReadResponse.success(resourceId, intervalHistoricalReadPayload);
+            // return ReadResponse.success(resourceId, intervalHistoricalReadPayload);
             case STATUS:
                 return ReadResponse.success(resourceId, recording);
             case LATEST_PAYLOAD:
-                return ReadResponse.success(resourceId,getLatestPayload());            
+                return ReadResponse.success(resourceId, getLatestPayload());
             default:
                 return super.read(identity, resourceId);
         }
@@ -110,12 +112,12 @@ public class WaterFlowSensorCSV extends BaseInstanceEnabler implements Destroyab
                 withParams != null ? withParams : "");
         switch (resourceId) {
             // case INTERVAL_HISTORICAL_READ:
-            //     try {
-            //         setupIntervalHistoricalRead(params);
-            //         return ExecuteResponse.success();
-            //     } catch (SQLException e) {
-            //         return ExecuteResponse.badRequest(e.toString());
-            //     }
+            // try {
+            // setupIntervalHistoricalRead(params);
+            // return ExecuteResponse.success();
+            // } catch (SQLException e) {
+            // return ExecuteResponse.badRequest(e.toString());
+            // }
             case INTERVAL_CHANGE_CONFIGURATION:
                 LOG.info("{}", params);
                 setIntervalChangeConfiguration(params);
@@ -173,15 +175,18 @@ public class WaterFlowSensorCSV extends BaseInstanceEnabler implements Destroyab
         fireResourcesChange(LAST_DELIVERED_INTERVAL);
     }
 
-    // private void setupIntervalHistoricalRead(String interval) throws SQLException {
-    //     String[] dates = interval.split(",");
-    //     Timestamp starttime = Timestamp.valueOf(dates[0]);
-    //     Timestamp stoptime = Timestamp.valueOf(dates[1]);
-    //     intervalHistoricalReadPayload = Base64.getUrlEncoder().encodeToString(waterflowDB.getWaterFlowsBetweenA_B(starttime, stoptime).getBytes());
-    //     fireResourcesChange(INTERVAL_HISTORICAL_READ_PAYLOAD);
+    // private void setupIntervalHistoricalRead(String interval) throws SQLException
+    // {
+    // String[] dates = interval.split(",");
+    // Timestamp starttime = Timestamp.valueOf(dates[0]);
+    // Timestamp stoptime = Timestamp.valueOf(dates[1]);
+    // intervalHistoricalReadPayload =
+    // Base64.getUrlEncoder().encodeToString(waterflowDB.getWaterFlowsBetweenA_B(starttime,
+    // stoptime).getBytes());
+    // fireResourcesChange(INTERVAL_HISTORICAL_READ_PAYLOAD);
     // }
 
-    private void setIntervalChangeConfiguration(String params) {        
+    private void setIntervalChangeConfiguration(String params) {
         String[] param = params.split(",");
         intervalPeriod = Integer.parseInt(param[0]);
         fireResourcesChange(INTERVAL_PERIOD);
@@ -207,14 +212,14 @@ public class WaterFlowSensorCSV extends BaseInstanceEnabler implements Destroyab
 
     private String getLatestPayload() {
         latestPaylod = Base64.getUrlEncoder().encodeToString(CsvHandler.readAllDataAtOnce(currentPath).getBytes());
-        CsvHandler.rename_and_clear(currentPath,oldPath);
+        CsvHandler.rename_and_clear(currentPath, oldPath);
         setLastDeliveredInterval(latestRecordedInterval);
         LOG.info("Delivered latest payload.");
         return latestPaylod;
     }
-    
+
     private synchronized void setLatestRecordedInterval(Date newlatestRecordedInterval) {
-        latestRecordedInterval = newlatestRecordedInterval;        
+        latestRecordedInterval = newlatestRecordedInterval;
         fireResourcesChange(LATEST_RECORDED_INTERVAL);
     }
 
@@ -237,11 +242,9 @@ public class WaterFlowSensorCSV extends BaseInstanceEnabler implements Destroyab
         Date date = new Date();
         Timestamp ts = new Timestamp(date.getTime());
         float value = rng.nextInt(20) / 10f;
-        CsvHandler.writeDataLine(currentPath,ts.toString(), value);
+        CsvHandler.writeDataLine(currentPath, ts.toString(), value);
         setLatestRecordedInterval(date);
     }
-
-    
 
     @Override
     public List<Integer> getAvailableResourceIds(ObjectModel model) {
