@@ -635,7 +635,7 @@ public class LeshanClientDemo {
         initializer.setInstancesForObject(DEVICE, new MyDevice());
         initializer.setInstancesForObject(LOCATION, locationInstance);
         initializer.setInstancesForObject(OBJECT_ID_TEMPERATURE_SENSOR, new RandomTemperatureSensor());
-        initializer.setInstancesForObject(OBJECT_ID_WATER_FLOW_SENSOR, new WaterFlowSensor());
+        initializer.setInstancesForObject(OBJECT_ID_WATER_FLOW_SENSOR, new WaterFlowSensorCSV());
         initializer.setInstancesForObject(OBJECT_ID_WATER_PRESSURE_SENSOR, new WaterPressureSensor());
         List<LwM2mObjectEnabler> enablers = initializer.createAll();
 
