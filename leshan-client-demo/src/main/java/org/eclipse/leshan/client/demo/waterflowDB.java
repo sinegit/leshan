@@ -4,15 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.Date;
-
-// '2018-01-01 03:00:00'
 
 public class waterflowDB {
     private static final String SQL_between_A_B = "SELECT value from testdb WHERE timestamp BETWEEN ? AND ?";
-    private static final String SQL_add_value = "INSERT INTO `testdb`(`timestamp`, `value`) VALUES (?,?)";
+    private static final String SQL_add_value = "INSERT INTO testdb (timestamp, value) VALUES (?,?)";
 
     public static void getWaterFlows(ResultSet rs) throws SQLException {
         

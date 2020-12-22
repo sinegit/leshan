@@ -6,11 +6,17 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
 import java.sql.SQLException;
 import java.sql.Timestamp;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import java.util.Base64;
+import java.util.UUID;
+import java.io.UnsupportedEncodingException;
 
 import org.eclipse.leshan.client.resource.BaseInstanceEnabler;
 import org.eclipse.leshan.client.servers.ServerIdentity;
@@ -23,6 +29,8 @@ import org.eclipse.leshan.core.response.WriteResponse;
 import org.eclipse.leshan.core.util.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jdk.internal.org.jline.utils.Log;
 
 public class WaterFlowSensor extends BaseInstanceEnabler implements Destroyable {
 
@@ -58,12 +66,12 @@ public class WaterFlowSensor extends BaseInstanceEnabler implements Destroyable 
     private Timestamp oldestRecordedIntervalTS = new Timestamp(oldestRecordedInterval.getTime());
     private Date latestRecordedInterval = new Date();
     private boolean recording = false;
-    private String intervalHistoricalReadPayload = "Nothing here yet";
-    private String latestPaylod = "Nothing here yet";
+    private String intervalHistoricalReadPayload = Base64.getUrlEncoder().encodeToString("Nothing here yet".getBytes());
+    private String latestPaylod = Base64.getUrlEncoder().encodeToString("Nothing here yet".getBytes());
 
     @Override
     public synchronized ReadResponse read(ServerIdentity identity, int resourceId) {
-        LOG.info("Read on Temperature resource /{}/{}/{}", getModel().id, getId(), resourceId);
+        LOG.info("Read on Water Flow resource /{}/{}/{}", getModel().id, getId(), resourceId);
         switch (resourceId) {
             case INTERVAL_PERIOD:
                 return ReadResponse.success(resourceId, intervalPeriod);
@@ -81,11 +89,13 @@ public class WaterFlowSensor extends BaseInstanceEnabler implements Destroyable 
                 return ReadResponse.success(resourceId, latestRecordedInterval);
             case INTERVAL_HISTORICAL_READ_PAYLOAD:
                 return ReadResponse.success(resourceId, intervalHistoricalReadPayload);
+            case STATUS:
+                return ReadResponse.success(resourceId, recording);
             case LATEST_PAYLOAD:
             try {
                 return ReadResponse.success(resourceId,getLatestPayload());
             } catch (SQLException e) {
-                return ReadResponse.success(resourceId,intervalHistoricalReadPayload);
+                return ReadResponse.success(resourceId,Base64.getUrlEncoder().encode("".getBytes()));
                 }
             default:
                 return super.read(identity, resourceId);
@@ -101,8 +111,12 @@ public class WaterFlowSensor extends BaseInstanceEnabler implements Destroyable 
                 withParams != null ? withParams : "");
         switch (resourceId) {
             case INTERVAL_HISTORICAL_READ:
-                setupIntervalHistoricalRead(params);
-                return ExecuteResponse.success();
+                try {
+                    setupIntervalHistoricalRead(params);
+                    return ExecuteResponse.success();
+                } catch (SQLException e) {
+                    return ExecuteResponse.badRequest(e.toString());
+                }
             case INTERVAL_CHANGE_CONFIGURATION:
                 LOG.info("{}", params);
                 setIntervalChangeConfiguration(params);
@@ -152,54 +166,64 @@ public class WaterFlowSensor extends BaseInstanceEnabler implements Destroyable 
 
     private void setCollectionStartTime(long newStartTime) {
         collectionStartTime.setTime(newStartTime);
+        fireResourcesChange(INTERVAL_COLLECTION_START_TIME);
     }
 
     private void setLastDeliveredInterval(Date newLastDeliveredInterval) {
         lastDeliveredInterval = newLastDeliveredInterval;
+        fireResourcesChange(LAST_DELIVERED_INTERVAL);
     }
 
-    private void setupIntervalHistoricalRead(String interval) {
-        intervalHistoricalReadPayload = "payload";
+    private void setupIntervalHistoricalRead(String interval) throws SQLException {
+        String[] dates = interval.split(",");
+        Timestamp starttime = Timestamp.valueOf(dates[0]);
+        Timestamp stoptime = Timestamp.valueOf(dates[1]);
+        intervalHistoricalReadPayload = Base64.getUrlEncoder().encodeToString(waterflowDB.getWaterFlowsBetweenA_B(starttime, stoptime).getBytes());
+        fireResourcesChange(INTERVAL_HISTORICAL_READ_PAYLOAD);
     }
 
-    private void setIntervalChangeConfiguration(String params) {
-        intervalPeriod = Integer.parseInt(params);
+    private void setIntervalChangeConfiguration(String params) {        
+        String[] param = params.split(",");
+        intervalPeriod = Integer.parseInt(param[0]);
+        fireResourcesChange(INTERVAL_PERIOD);
         if (params.length() == 2) {
-            intervalStartOffset = Integer.parseInt(params);
+            intervalStartOffset = Integer.parseInt(param[1]);
+            fireResourcesChange(INTERVAL_START_OFFSET);
             if (params.length() == 3) {
-                utcOffset = params;
+                utcOffset = param[2];
+                fireResourcesChange(INTERVAL_UTC_OFFSET);
             }
         }
     }
 
     private void startRecording() {
         recording = true;
+        fireResourcesChange(STATUS);
     }
 
     private void stopRecording() {
         recording = false;
+        fireResourcesChange(STATUS);
     }
 
     private String getLatestPayload() throws SQLException {
         Timestamp starttime = new Timestamp(lastDeliveredInterval.getTime());
         Timestamp stoptime = new Timestamp(latestRecordedInterval.getTime());
-        latestPaylod = waterflowDB.getWaterFlowsBetweenA_B(starttime, stoptime);
-        
-        System.out.println(latestPaylod);
+        latestPaylod = Base64.getUrlEncoder().encodeToString(waterflowDB.getWaterFlowsBetweenA_B(starttime, stoptime).getBytes());
         setLastDeliveredInterval(latestRecordedInterval);
-        fireResourcesChange(LAST_DELIVERED_INTERVAL);
         LOG.info("Delivered payload between {} and {}", starttime, stoptime);
         return latestPaylod;
     }
     
     private synchronized void setLatestRecordedInterval(Date newlatestRecordedInterval) {
-        latestRecordedInterval = newlatestRecordedInterval;
+        latestRecordedInterval = newlatestRecordedInterval;        
+        fireResourcesChange(LATEST_RECORDED_INTERVAL);
     }
 
     public WaterFlowSensor() {
         this.scheduler = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("Water Flow Sensor"));
         scheduler.scheduleAtFixedRate(new Runnable() {
-
+            // TODO: Cancel task and reschedule when intervalPeriod changes
             @Override
             public void run() {
                 try {
@@ -217,7 +241,6 @@ public class WaterFlowSensor extends BaseInstanceEnabler implements Destroyable 
         float value = rng.nextInt(20) / 10f;
         waterflowDB.addnewmeasurement(ts, value);
         setLatestRecordedInterval(date);
-        fireResourcesChange(LATEST_RECORDED_INTERVAL);
     }
 
     

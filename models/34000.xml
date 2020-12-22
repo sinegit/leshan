@@ -49,15 +49,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 <RangeEnumeration>1..864000</RangeEnumeration>
                 <Units>s</Units>
                 <Description><![CDATA[The Interval Period resource is an Integer value representing the width in seconds of the intervals being managed by this interval data object. This resource is read only and can only be changed by resource 11 (Change Interval Configuration). It is recommended that the Interval Period be set to a devisor of 24 hours (86400 seconds) to provide a consistent interval period. Examples of Interval Period include:-
-30 = Every 30 seconds
-600 = Every 10 minutes
-1800 = Every 30 minutes
-3600 = Hourly
-7200 = Every 2 hours
-14400 = Every 4 hours
-43200 = Every 12 hours
-86400 = Every Day
-172600 = Every Second Day]]></Description>
+                30 = Every 30 seconds
+                600 = Every 10 minutes
+                1800 = Every 30 minutes
+                3600 = Hourly
+                7200 = Every 2 hours
+                14400 = Every 4 hours
+                43200 = Every 12 hours
+                86400 = Every Day
+                172600 = Every Second Day]]></Description>
             </Item>
             <Item ID="6001">
                 <Name>Interval Start Offset</Name>
@@ -128,13 +128,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 <RangeEnumeration></RangeEnumeration>
                 <Units></Units>
                 <Description><![CDATA[Historical Interval Read is an executable resource designed to retrieve ad-hoc interval read data. The resource takes two arguments:-
-Argument 0: First Interval time to Retrieve represented as number of seconds since Jan 1st, 1970 in the UTC time zone.
-Argument 1: Last interval time to Retrieve represented as number of seconds since Jan 1st, 1970 in the UTC time zone.
-The dates should be inclusive based on the end time of the interval. The data retrieved from this resource will be readable (or observable) from the Historical Read Payload Resource.
-
-As an example, the Argument List to retrieve data from Midnight 2nd March (UTC+10) to Midnight 6rd March (UTC+10) for a specific instance of the interval data object, would be constructed as follows:-
-
-0='1488463200',1='1488808800']]></Description>
+                Argument 0: First Interval time to Retrieve represented in the DateTime format YYYY-MM-DD HH:MI:SS.
+                Argument 1: Last interval time to Retrieve represented in the DateTime format YYYY-MM-DD HH:MI:SS.
+                The dates should be inclusive based on the end time of the interval. The data retrieved from this resource will be readable (or observable) from the Historical Read Payload Resource.]]></Description>
             </Item>
             <Item ID="6009">
                 <Name>Interval Historical Read Payload</Name>
@@ -155,15 +151,15 @@ As an example, the Argument List to retrieve data from Midnight 2nd March (UTC+1
                 <RangeEnumeration></RangeEnumeration>
                 <Units></Units>
                 <Description><![CDATA[Change Interval Configuration is an executable resource designed to allow the Interval Period, Interval Start Offset and Interval UTC Offset to be reconfigured. The resource takes three arguments:-
-Argument 0: [Mandatory] Interval Period represented as an integer as defined in the Interval Period Resource.
-Argument 1: [Optional] Interval start offset represented as an integer as defined in the Interval Start Offset Resource. If not provided, leave the value as per the current configuration
-Argument 2: [Optional] Interval UTC offset represented as a String as defined in the Interval UTC Offset Resource. If not provided, leave the value as per the current configuration.
+                Argument 0: [Mandatory] Interval Period represented as an integer as defined in the Interval Period Resource.
+                Argument 1: [Optional] Interval start offset represented as an integer as defined in the Interval Start Offset Resource. If not provided, leave the value as per the current configuration
+                Argument 2: [Optional] Interval UTC offset represented as a String as defined in the Interval UTC Offset Resource. If not provided, leave the value as per the current configuration.
 
-Depending on the specifics of the implementation of this object, reconfiguring the Interval data object may result in the removal of all historical data for this Interval Data Object Instance. Please consult with your device vendor as to the implications of reconfiguring an Interval Data Object Instance.
+                Depending on the specifics of the implementation of this object, reconfiguring the Interval data object may result in the removal of all historical data for this Interval Data Object Instance. Please consult with your device vendor as to the implications of reconfiguring an Interval Data Object Instance.
 
-As an example, the Argument List to change an interval data object instance from its existing values to one hour intervals, midnight aligned in UTC+10 time zone:-
+                As an example, the Argument List to change an interval data object instance from its existing values to one hour intervals, midnight aligned in UTC+10 time zone:-
 
-0='3600',1='0',1='UTC+10']]></Description>
+                0='3600',1='0',1='UTC+10']]></Description>
             </Item>
             <Item ID="6026">
                 <Name>Start</Name>
@@ -190,7 +186,7 @@ As an example, the Argument List to change an interval data object instance from
                 <Operations>R</Operations>
                 <MultipleInstances>Single</MultipleInstances>
                 <Mandatory>Optional</Mandatory>
-                <Type>Integer</Type>
+                <Type>Boolean</Type>
                 <RangeEnumeration></RangeEnumeration>
                 <Units></Units>
                 <Description><![CDATA[Recording Enabled is a read-only resource providing an indication of if interval data is currently being recorded for this object instance. Refer to re-usable resource LogStatus for further details.]]></Description>
@@ -204,31 +200,11 @@ As an example, the Argument List to change an interval data object instance from
                 <RangeEnumeration></RangeEnumeration>
                 <Units></Units>
                 <Description><![CDATA[The Latest Payload resource is a read-only serialised Opaque (Binary) representation of all the Interval Data between the Last Delivered Interval and the Latest Recorded Interval, accounting for the Delivery Midnight Aligned resource. When this payload is delivered to the LwM2M server, via either a read request or a confirmed observation on this Object, Object Instance or Resource, the Latest Delivered Interval should be updated. When no new data exists, an empty Opaque value should be provided.
-
-The payload data can be provided in an implementation specific serialisation, but by default for fixed length values should use the OMA-LwM2M CBOR format encoded as follows:
-
-1. 8-bit integer, value 2 representing OMA-LwM2M CBOR format.
-2. Interval Data Instance ID/ Class [16-bit integer]
-3. Timestamp of first Interval [32-bit integer] representing the number of seconds since Jan 1st, 1970 in the UTC time zone.
-4. Interval Period in seconds [32-bit integer]
-5. Number of intervals in Payload [16-bit integer]
-6. Number of Values Per Interval [8-bit integer]
-7. Size of Value 1 in bits [8-bit integer]
-8. Size of Value 2 in bits [8-bit integer]
-...
-9. Size of Value N in bits [8-bit integer]
-10. Interval 1 Value 1 [x bits]
-11. Interval 1 Value 2 [x bits]
-...
-12. Interval 1 Value N [x bits]
-...
-13. Interval N Value N [x bits]
-
-If for some implementation specific reason, there are missing intervals in the sequence, the payload may consist of multiple blocks of the above serialised data (appended into a single binary opaque value), each block representing a continuous series of interval data.
+                
+                The payload data can be provided in an implementation specific serialisation, but by default for fixed length values should use the OMA-LwM2M CBOR format encoded. 
 ]]></Description>
             </Item>
         </Resources>
         <Description2></Description2>
     </Object>
 </LWM2M>
-

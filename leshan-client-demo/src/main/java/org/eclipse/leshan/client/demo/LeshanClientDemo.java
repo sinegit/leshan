@@ -631,6 +631,7 @@ public class LeshanClientDemo {
                 initializer.setInstancesForObject(SERVER, new Server(123, lifetime));
             }
         }
+        // initializer.setInstancesForObject(SECURITY, rpk(serverURI, 123, clientPublicKey.getEncoded(), clientPrivateKey.getEncoded(), serverPublicKey.getEncoded()));
         initializer.setInstancesForObject(DEVICE, new MyDevice());
         initializer.setInstancesForObject(LOCATION, locationInstance);
         initializer.setInstancesForObject(OBJECT_ID_TEMPERATURE_SENSOR, new RandomTemperatureSensor());

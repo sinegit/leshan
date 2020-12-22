@@ -91,7 +91,7 @@ public class WaterPressureSensor extends BaseInstanceEnabler implements Destroya
     }
 
     private void adjustWaterPressure() {
-        float delta = (rng.nextInt(20) - 10) / 10f;
+        float delta = (rng.nextInt(60)) / 10f;
         currentWaterPressure += delta;
         Integer changedResource = adjustMinMaxMeasuredValue(currentWaterPressure);
         if (changedResource != null) {
