@@ -17,6 +17,8 @@ Start the client
 
 ![Leshan](https://eclipse.org/leshan/img/multicolor-leshan.png)
 
+![Sine Lab](https://github.com/sinegit/leshan/blob/master/leshan-server-demo/src/main/resources/webapp/img/sinelogo.png)
+
 [Eclipse Leshan™](https://eclipse.org/leshan) is an OMA Lightweight M2M server and client Java implementation.
 
 [What is OMA LWM2M ?](https://omaspecworks.org/what-is-oma-specworks/iot/lightweight-m2m-lwm2m/)  
