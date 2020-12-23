@@ -37,3 +37,4 @@ bin/
 **/*.pem
 **/*.srl
 !**/src/**/*.der
+/.metadata/
