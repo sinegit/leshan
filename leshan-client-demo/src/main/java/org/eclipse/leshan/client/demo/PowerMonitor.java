@@ -25,9 +25,9 @@ import de.re.easymodbus.exceptions.ModbusException;
 import de.re.easymodbus.modbusclient.*;
 
 
-public class TemperatureSensor extends BaseInstanceEnabler implements Destroyable {
+public class PowerMonitor extends BaseInstanceEnabler implements Destroyable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TemperatureSensor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PowerMonitor.class);
 
     
     private static final int SENSOR_VALUE = 5700;
@@ -46,9 +46,10 @@ public class TemperatureSensor extends BaseInstanceEnabler implements Destroyabl
     private double maxMeasuredValue = currentTemp;
     private Date timestamp = new Date();
     private ModbusClient modbusClient = new ModbusClient("127.0.0.1",502);
+    private int[] register_address = {0,4,8};
 
    
-    public TemperatureSensor() {
+    public PowerMonitor() {
         
     	try {
 			modbusClient.Connect();

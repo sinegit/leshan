@@ -29,10 +29,7 @@ import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -129,10 +126,10 @@ public class LeshanClientDemo {
 
             "18830.xml", "18831.xml", "40000.xml"};
 
-    private static final int OBJECT_ID_TEMPERATURE_SENSOR = 3303;
-    private static final int OBJECT_ID_NEW_TEMPERATURE_SENSOR = 40000;
-    private static final int OBJECT_ID_WATER_FLOW_SENSOR = 34000;
-    private static final int OBJECT_ID_WATER_PRESSURE_SENSOR = 33000;
+    // private static final int OBJECT_ID_TEMPERATURE_SENSOR = 3303;
+    private static final int OBJECT_ID_POWER_MONITOR = 40000;
+    // private static final int OBJECT_ID_WATER_FLOW_SENSOR = 34000;
+    // private static final int OBJECT_ID_WATER_PRESSURE_SENSOR = 33000;
     private final static String DEFAULT_ENDPOINT = "LeshanClientDemo";
     private final static int DEFAULT_LIFETIME = 5 * 60; // 5min in seconds
     private final static String USAGE = "java -jar leshan-client-demo.jar [OPTION]\n\n";
@@ -633,7 +630,7 @@ public class LeshanClientDemo {
         // serverPublicKey.getEncoded()));
         initializer.setInstancesForObject(DEVICE, new MyDevice());
         // initializer.setInstancesForObject(LOCATION, locationInstance);
-        initializer.setInstancesForObject(OBJECT_ID_NEW_TEMPERATURE_SENSOR, new TemperatureSensor());
+        initializer.setInstancesForObject(OBJECT_ID_POWER_MONITOR, new PowerMonitor());
         // initializer.setInstancesForObject(OBJECT_ID_WATER_FLOW_SENSOR, new
         // WaterFlowSensorCSV());
         // initializer.setInstancesForObject(OBJECT_ID_WATER_PRESSURE_SENSOR, new
