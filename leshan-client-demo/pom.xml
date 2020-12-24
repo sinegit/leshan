@@ -61,6 +61,13 @@ Contributors:
             <artifactId>opencsv</artifactId>
             <version>5.3</version>
         </dependency>
+        <dependency>
+		    <groupId>easymodbus</groupId>
+		    <artifactId>modbusclient</artifactId>
+		    <scope>system</scope>
+		    <version>1.0</version>
+		    <systemPath>C:\Github\leshan\libs/EasyModbusJava.jar</systemPath>   
+		</dependency>
     </dependencies>
 
     <build>
