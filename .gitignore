@@ -38,3 +38,6 @@ bin/
 **/*.srl
 !**/src/**/*.der
 /.metadata/
+
+# Executables for MODBUS #
+pyModSlave/
