@@ -33,8 +33,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <LWM2M  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://openmobilealliance.org/tech/profiles/LWM2M.xsd">
 	<Object ObjectType="MODefinition">
-		<Name>Temperature HTC511</Name>
-		<Description1>This IPSO object should be used with a temperature sensor to report a temperature measurement.  It also provides resources for minimum/maximum measured values and the minimum/maximum range that can be measured by the temperature sensor. An example measurement unit is degrees Celsius.</Description1>
+		<Name>Power Monitor</Name>
+		<Description1>This IPSO object should be used with a CENTRON Meter for Power Monitoring.</Description1>
 		<ObjectID>40000</ObjectID>
 		<ObjectURN>urn:oma:lwm2m:x:40000</ObjectURN>
 		<LWM2MVersion>1.0</LWM2MVersion>
@@ -42,7 +42,7 @@ POSSIBILITY OF SUCH DAMAGE.
 		<MultipleInstances>Multiple</MultipleInstances>
 		<Mandatory>Optional</Mandatory>
 		<Resources>
-			<Item ID="5700">
+			<!-- <Item ID="5700">
 				<Name>Sensor Value</Name>
 				<Operations>R</Operations>
 				<MultipleInstances>Single</MultipleInstances>
@@ -91,16 +91,16 @@ POSSIBILITY OF SUCH DAMAGE.
 				<RangeEnumeration></RangeEnumeration>
 				<Units></Units>
 				<Description>The minimum value that can be measured by the sensor.</Description>
-			</Item>
-			<Item ID="5604">
-				<Name>Max Range Value</Name>
+			</Item> -->
+			<Item ID="6051">
+				<Name>Three Phase Voltage</Name>
 				<Operations>R</Operations>
 				<MultipleInstances>Single</MultipleInstances>
 				<Mandatory>Optional</Mandatory>
-				<Type>Float</Type>
+				<Type>String</Type>
 				<RangeEnumeration></RangeEnumeration>
 				<Units></Units>
-				<Description>The maximum value that can be measured by the sensor.</Description>
+				<Description>The voltage reading of all the phases of the node it is connected to.</Description>
 			</Item>
 			<Item ID="6052">
 				<Name>TimeStamp</Name>
@@ -110,17 +110,17 @@ POSSIBILITY OF SUCH DAMAGE.
 				<Type>String</Type>
 				<RangeEnumeration></RangeEnumeration>
 				<Units></Units>
-				<Description>Measurement Units Definition.</Description>
+				<Description>Time Stamp</Description>
 			</Item>
-			<Item ID="5605">
-				<Name>Reset Min and Max Measured Values</Name>
+			<Item ID="6053">
+				<Name>Reset Device</Name>
 				<Operations>E</Operations>
 				<MultipleInstances>Single</MultipleInstances>
 				<Mandatory>Optional</Mandatory>
 				<Type></Type>
 				<RangeEnumeration></RangeEnumeration>
 				<Units></Units>
-				<Description>Reset the Min and Max Measured Values to Current Value.</Description>
+				<Description>Reset the Power Monitor.</Description>
 			</Item>
 		</Resources>
 		<Description2></Description2>

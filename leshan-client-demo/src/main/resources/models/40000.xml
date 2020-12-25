@@ -81,17 +81,17 @@ POSSIBILITY OF SUCH DAMAGE.
 				<RangeEnumeration></RangeEnumeration>
 				<Units></Units>
 				<Description>The maximum value measured by the sensor since power ON or reset.</Description>
-			</Item>
-			<Item ID="5603">
-				<Name>Min Range Value</Name>
+			</Item> -->
+			<Item ID="6054">
+				<Name>Measurement Resolution</Name>
 				<Operations>R</Operations>
 				<MultipleInstances>Single</MultipleInstances>
 				<Mandatory>Optional</Mandatory>
-				<Type>Float</Type>
+				<Type>Integer</Type>
 				<RangeEnumeration></RangeEnumeration>
-				<Units></Units>
-				<Description>The minimum value that can be measured by the sensor.</Description>
-			</Item> -->
+				<Units>Seconds</Units>
+				<Description>Measurement Resolution</Description>
+			</Item>
 			<Item ID="6051">
 				<Name>Three Phase Voltage</Name>
 				<Operations>R</Operations>

@@ -1,0 +1,20 @@
+Name:
+  - agg0
+
+AggID:
+  - 0
+
+ChannelName:
+  - agg0channel
+
+GlobalChannelName:
+  - commonchannel
+
+SensorList:
+  - optiplex
+  - rasp7
+  - Shammya
+
+TotalAggregators:
+  - 7
+

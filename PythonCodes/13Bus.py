@@ -27,11 +27,12 @@ def update_register(data_input, data_type = 'voltage'):
             payload = builder.build()
             client.write_registers(VOLTAGE_PORTS[i], payload,skip_encode=True, unit = 1)
     client.close()
+    print('Writing to Register Completed.')
 
 
 slack_bus_voltage = 1.02
-for itr in range(10):
-    time.sleep(50)
+for itr in range(10000):
+    
     dss.run_command('Compile ' + 'IEEE13Nodeckt.dss')  # redirecting to the model
     # print (os.getcwd())
     dss.Vsources.PU(slack_bus_voltage)  # setting up the slack bus voltage
@@ -48,6 +49,7 @@ for itr in range(10):
         voltage_reading.append(dss.CmathLib.cabs(x[i],x[i+1]))
     print(voltage_reading)
     update_register(data_input = voltage_reading)
+    time.sleep(150)
 
 
 # System.out.println(ModbusClient.ConvertRegistersToFloat(modbusClient.ReadHoldingRegisters(0, 2), ModbusClient.RegisterOrder.HighLow));
