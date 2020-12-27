@@ -1,0 +1,3 @@
+sudo apt update
+sudo rpi-update a995f0c9a9b3e5dbd2a41f69f5c4c82cdf33c7ec
+sudo reboot
