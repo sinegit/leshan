@@ -73,3 +73,15 @@ java -jar ./leshan-client-demo/target/leshan-client-demo-2.0.0-SNAPSHOT-jar-with
 ```
 
 
+## Step 4: How to Insall Third Party Jar libraries
+For the simulation prupose, this code uses the `EasyModbus` jar file. If the downloaded `jar` file does not come with a `.pom` file, then the installation can be done in the following way 
+```sh
+$ cd libs
+$ mvn install:install-file -Dfile=EasyModbusJava.jar -DgroupId=de.re -DartifactId=EasyModbusJava -Dversion=2.8 -Dpackaging=jar
+```
+
+If the `jar` file comes with a `.pom` file, do the following: 
+```sh
+$ cd libs
+$ mvn install:install-file -Dfile=EasyModbusJava.jar -DpomFile=<name_of_pom_file>
+```
