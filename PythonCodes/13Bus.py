@@ -13,7 +13,7 @@ from pymodbus.constants import Endian
 # Global variable initialization and error checking
 
 IP_ADDRESS = "127.0.0.1" 
-MODBUS_PORT = 502
+MODBUS_PORT = 503
 VOLTAGE_PORTS = [0,4,8]
 
 def update_register(data_input, data_type = 'voltage'):
@@ -49,7 +49,7 @@ for itr in range(10000):
         voltage_reading.append(dss.CmathLib.cabs(x[i],x[i+1]))
     print(voltage_reading)
     update_register(data_input = voltage_reading)
-    time.sleep(150)
+    time.sleep(75)
 
 
 # System.out.println(ModbusClient.ConvertRegistersToFloat(modbusClient.ReadHoldingRegisters(0, 2), ModbusClient.RegisterOrder.HighLow));

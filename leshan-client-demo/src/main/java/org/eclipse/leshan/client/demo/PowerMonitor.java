@@ -47,7 +47,7 @@ public class PowerMonitor extends BaseInstanceEnabler implements Destroyable {
     private static final List<Integer> supportedResources = Arrays.asList(VOLTAGE, TIMESTAMP, RESET_DEVICE, MEASUREMENT_RESOLUTION);
     private final ScheduledExecutorService scheduler;
     private Date current_timestamp = new Date();
-    private ModbusClient modbusClient = new ModbusClient("127.0.0.1", 502);
+    private ModbusClient modbusClient = new ModbusClient("127.0.0.1", 503);
     private int[] voltage_register_address = { 0, 4, 8 };
     private String voltage_data;
     SimpleDateFormat date_format = new SimpleDateFormat ("yyyy.MM.dd_hh.mm.ss");
