@@ -12,7 +12,7 @@ Build the project
 
 Start the server
 
-`java -jar .\leshan-server-demo\target\leshan-server-demo-2.0.0-SNAPSHOT-jar-with-dependencies.jar -pubk .\serverkeys\cpubk.der -prik .\serverkeys\cprik.der`
+`java -jar .\leshan-server-demo\target\leshan-server-demo-2.0.0-SNAPSHOT-jar-with-dependencies.jar -pubk .\serverkeys\cpubk.der -prik .\serverkeys\cprik.der -m .\models\`
 
 Start the client
 
